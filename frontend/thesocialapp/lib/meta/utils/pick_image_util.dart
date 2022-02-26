@@ -5,7 +5,7 @@ import 'dart:typed_data';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:thesocialapp/core/api/services/cache_service.dart';
+import 'package:thesocialapp/core/services/cache_service.dart';
 
 class ImageUtility {
   static Future<File?> getImage() async {

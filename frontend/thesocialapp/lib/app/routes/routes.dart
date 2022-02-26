@@ -1,3 +1,4 @@
+import 'package:thesocialapp/meta/views/add_post/add_post_view.dart';
 import 'package:thesocialapp/meta/views/authentication/login_view.dart';
 import 'package:thesocialapp/meta/views/authentication/signup_view.dart';
 import 'package:flutter/material.dart';
@@ -11,4 +12,5 @@ final Map<String, WidgetBuilder> routes = {
   SplashView.routeName: (context) => const SplashView(),
   HomeView.routeName: (context) => const HomeView(),
   DeciderView.routeName: (context) => const DeciderView(),
+  AddPostView.routeName: (context) => const AddPostView(),
 };

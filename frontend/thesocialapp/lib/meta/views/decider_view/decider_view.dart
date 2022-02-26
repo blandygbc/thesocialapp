@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:thesocialapp/core/api/services/cache_service.dart';
+import 'package:thesocialapp/core/services/cache_service.dart';
 import 'package:thesocialapp/meta/views/authentication/login_view.dart';
-import 'package:thesocialapp/meta/views/authentication/signup_view.dart';
 import 'package:thesocialapp/meta/views/home_view/home_view.dart';
 import 'package:thesocialapp/meta/views/splash_view/splash_view.dart';
 

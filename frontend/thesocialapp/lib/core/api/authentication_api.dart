@@ -16,20 +16,22 @@ class AuthenticationAPI {
   }) async {
     final Uri uri = Uri.parse(APIRoutes.signupUrl);
     debugPrint(uri.toString());
-    final http.Response response = await client.post(uri,
+    try {
+      final http.Response response = await client.post(
+        uri,
         body: jsonEncode({
           "username": username,
           "useremail": useremail,
           "userpassword": userpassword,
           "userimage": userimage,
         }),
-        headers: {
-          'content-type': 'application/json;unicode=UTF-8',
-          'Accept': 'application/json',
-          "Access-Control-Allow-Origin": "*",
-        });
-    if (response.statusCode == statusCodeCreated) {
-      return response.body;
+        headers: APIRoutes.headers,
+      );
+      if (response.statusCode == statusCodeCreated) {
+        return response.body;
+      }
+    } catch (e) {
+      debugPrint(e.toString());
     }
   }
 
@@ -39,16 +41,35 @@ class AuthenticationAPI {
   }) async {
     final Uri uri = Uri.parse(APIRoutes.loginURL);
     debugPrint(uri.toString());
-    final http.Response response = await client.post(uri,
+    try {
+      final http.Response response = await client.post(
+        uri,
         body: jsonEncode({"useremail": email, "userpassword": password}),
-        headers: {
-          'content-type': 'application/json;unicode=UTF-8',
-          'Accept': 'application/json',
-          "Access-Control-Allow-Origin": "*",
-        });
-    if (response.statusCode == statusCodeCreated) {
+        headers: APIRoutes.headers,
+      );
       debugPrint(response.body);
-      return response.body;
+      return response;
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  Future decodeJwt({required dynamic token}) async {
+    final Uri uri = Uri.parse(APIRoutes.decodeJwtUrl);
+    debugPrint(uri.toString());
+    Map<String, String> headers = APIRoutes.headers;
+    headers["Authorization"] = token;
+    try {
+      final http.Response response = await client.get(
+        uri,
+        headers: headers,
+      );
+      if (response.statusCode == statusCodeOk) {
+        debugPrint(response.body);
+        return response.body;
+      }
+    } catch (e) {
+      debugPrint(e.toString());
     }
   }
 }

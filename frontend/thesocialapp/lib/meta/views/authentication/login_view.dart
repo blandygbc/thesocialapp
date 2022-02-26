@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:thesocialapp/core/api/notifier/authentication_notifier.dart';
+import 'package:thesocialapp/core/notifier/authentication_notifier.dart';
 import 'package:thesocialapp/meta/views/authentication/signup_view.dart';
 
 class LoginView extends StatelessWidget {

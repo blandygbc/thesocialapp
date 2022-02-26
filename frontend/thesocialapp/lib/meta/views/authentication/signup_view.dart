@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:thesocialapp/core/api/notifier/authentication_notifier.dart';
-import 'package:thesocialapp/core/api/notifier/utility_notifier.dart';
+import 'package:thesocialapp/core/notifier/authentication_notifier.dart';
+import 'package:thesocialapp/core/notifier/utility_notifier.dart';
 import 'package:thesocialapp/meta/views/authentication/login_view.dart';
 
 class SignupView extends StatelessWidget {
@@ -79,12 +79,12 @@ class SignupView extends StatelessWidget {
                       height: 15,
                     ),
                     _userImage!.isNotEmpty
-                        ? Container(
+                        ? SizedBox(
                             height: 100,
                             width: 100,
                             child: Image.network(utilityNotifier.userImage!),
                           )
-                        : Container(
+                        : const SizedBox(
                             height: 0,
                             width: 0,
                           ),

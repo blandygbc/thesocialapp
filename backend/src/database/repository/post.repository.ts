@@ -35,6 +35,7 @@ export class PostRepository extends Repository<PostEntity> {
                     .status(statusCodes.badRequest)
                     .send({
                         added: false,
+                        message: error
                     });
                 return false;
             }
@@ -43,14 +44,14 @@ export class PostRepository extends Repository<PostEntity> {
 
     async fetchPosts(req: Request, res: Response) {
         try {
-            /*let posts = await this.find({
+            /* let posts = await this.find({
                                 where: {
                                     users: {
                                         user_id: "post.post_user"
                                     }
                                 }, 
                 relations: ['users'],
-            });*/
+            }) */
             let posts = await this.createQueryBuilder("post")
                 .leftJoinAndSelect("post.post_user", "users")
                 .select()
@@ -73,6 +74,7 @@ export class PostRepository extends Repository<PostEntity> {
                     .status(statusCodes.badRequest)
                     .send({
                         received: false,
+                        message: error,
                         data: null,
                     });
                 return false;

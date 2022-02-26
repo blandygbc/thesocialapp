@@ -47,27 +47,27 @@ export class UserRepository extends Repository<UserEntity>{
         }
     }
 
-    async findUserDataFromEmail(req: Request, res: Response): Promise<any> {
-        let { useremail } = req.body;
-        /* await this.createQueryBuilder("users")
-            .select("users.userpassword")
-            .where("users.useremail = :useremail", {
-                useremail: useremail,
-            })
-            .getOne() */
-        let getBaseUserData = await this.findOne({ where: { useremail: useremail } })
-
-        if (getBaseUserData === undefined) {
-            console.log("findUserDataFromEmail send")
-            return res
-                .status(statusCodes.forbidden)
-                .send({
-                    message: "Wrong user or password",
-                    authenticated: false
+    /*     async findUserDataFromEmail(req: Request, res: Response): Promise<any> {
+            let { useremail } = req.body;
+             await this.createQueryBuilder("users")
+                .select("users.userpassword")
+                .where("users.useremail = :useremail", {
+                    useremail: useremail,
                 })
-        }
-
-        return getBaseUserData;
-
-    }
+                .getOne() 
+            let getBaseUserData = await this.findOne({ where: { useremail: useremail } })
+    
+            if (getBaseUserData === undefined) {
+                console.log("findUserDataFromEmail send forb")
+                res.status(statusCodes.forbidden)
+                    .send({
+                        message: "Wrong user or password",
+                        authenticated: false
+                    })
+                return;
+            }
+    
+            return getBaseUserData;
+    
+        } */
 }

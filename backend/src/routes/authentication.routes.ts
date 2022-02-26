@@ -4,8 +4,9 @@ import { AuthenticationController } from "../controllers/authentication.controll
 const authRouter = Router();
 
 authRouter.get("/", (req, res) => { res.send("Authentication routes") });
+authRouter.get("/decode-jwt", AuthenticationController.decodeJwt);
+
 authRouter.post("/signup", AuthenticationController.signup);
 authRouter.post("/login", AuthenticationController.login);
-authRouter.get("/posts", AuthenticationController.showPosts);
 
 export { authRouter }

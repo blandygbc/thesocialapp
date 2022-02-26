@@ -11,28 +11,6 @@ import { validate } from "class-validator";
 dotenv.config()
 
 export class AuthenticationController {
-    static async showPosts(req: Request, res: Response) {
-        let token = req.headers.authorization as string;
-        let jwt_secret_key = process.env.JWT_SECRET_KEY as string;
-        jwt.verify(token, jwt_secret_key, async (error: any, data: any) => {
-            if (error) {
-                return res
-                    .status(statusCodes.unauthorized)
-                    .send({
-                        received: false,
-                        data: error
-                    })
-            }
-            return res
-                .status(statusCodes.created)
-                .send({
-                    code: statusCodes.created,
-                    posts: "List of posts",
-                    userdata: data
-                })
-        })
-    }
-
     static validateEmail(useremail: string) {
         return EmailValidator.validate(useremail);
     }
@@ -51,7 +29,7 @@ export class AuthenticationController {
                 .send({
                     authentication: false,
                     //data: errMap.map(v => v!.isEmail).toString()
-                    data: errMap[0]!['isEmail'].toString()
+                    message: errMap[0]!['isEmail'].toString()
                 })
         }
 
@@ -64,7 +42,7 @@ export class AuthenticationController {
                     .status(statusCodes.unauthorized)
                     .send({
                         authentication: false,
-                        data: error
+                        message: error
                     })
             }
             //! Saving user data
@@ -72,7 +50,7 @@ export class AuthenticationController {
 
             //! Sending a JWT
             if (result) {
-                AuthenticationController.jwtSign(useremail, jwt_secret_key, "1h", req, res);
+                AuthenticationController.jwtSign(useremail, jwt_secret_key, "1d", req, res);
             }
         });
 
@@ -90,36 +68,50 @@ export class AuthenticationController {
                 .status(statusCodes.invalidEmail)
                 .send({
                     authentication: false,
-                    data: "Enter a valid email"
+                    message: "Enter a valid email"
                 })
         }
 
 
         //! DB user data
-        let userRepositoy = getCustomRepository(UserRepository);
-        let dbUserData = await userRepositoy.findUserDataFromEmail(req, res);
+        let dbUserData = await getCustomRepository(UserRepository)
+            .findOne({ where: { useremail: useremail } })
 
-        //! Compare passwords
-        bcrypt.compare(userpassword, dbUserData.userpassword, async (error: any, result: any) => {
-            if (error) {
-                return res
-                    .status(statusCodes.unauthorized)
-                    .send({
-                        authentication: false,
-                        data: error
-                    })
-            }
-            if (!result) {
-                return res
-                    .status(statusCodes.forbidden)
-                    .send({
-                        authentication: false,
-                        data: "Wrong user or password"
-                    })
-            }
-            //! Sending a JWT
-            return AuthenticationController.jwtSign(useremail, jwt_secret_key, "1h", req, res);
-        });
+        if (dbUserData !== undefined) {
+            console.log("found user")
+            //! Compare passwords
+            bcrypt.compare(userpassword, dbUserData.userpassword, async (error: any, result: any) => {
+                if (error) {
+                    console.log(error)
+                    return res
+                        .status(statusCodes.unauthorized)
+                        .send({
+                            authentication: false,
+                            message: error
+                        })
+                } else if (!result) {
+                    console.log("Wrong user or password")
+                    return res
+                        .status(statusCodes.forbidden)
+                        .send({
+                            authentication: false,
+                            message: "Wrong user or password"
+                        })
+                } else {
+                    //! Sending a JWT
+                    console.log("logged in")
+                    return AuthenticationController.jwtSign(useremail, jwt_secret_key, "1d", req, res);
+                }
+            });
+        } else {
+            console.log("Wrong user or password")
+            return res.status(statusCodes.forbidden)
+                .send({
+                    message: "Wrong user or password",
+                    authenticated: false
+                })
+        }
+
     }
 
     static async jwtSign(
@@ -145,16 +137,39 @@ export class AuthenticationController {
                         .status(statusCodes.unauthorized)
                         .send({
                             authentication: false,
-                            data: err
+                            message: err
                         })
                 }
                 console.log("jwtSign send ok")
                 return res
-                    .status(statusCodes.created)
+                    .status(statusCodes.ok)
                     .send({
                         authentication: true,
                         data: data
                     })
             });
+    }
+
+    static async decodeJwt(req: Request, res: Response) {
+        let token = req.headers.authorization as string;
+        let jwt_secret_key = process.env.JWT_SECRET_KEY as string;
+        jwt.verify(token, jwt_secret_key, async (error: any, data: any) => {
+            if (error) {
+                console.log(error)
+                return res
+                    .status(statusCodes.unauthorized)
+                    .send({
+                        message: "Something went wrong"
+                    })
+            } else {
+                let useremail = data.useremail!;
+                return res
+                    .status(statusCodes.ok)
+                    .send({
+                        data: useremail,
+                    })
+            }
+        });
+
     }
 }

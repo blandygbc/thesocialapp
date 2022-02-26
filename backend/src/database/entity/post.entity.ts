@@ -18,9 +18,9 @@ export class PostEntity extends BaseEntity {
 
     @Column({
         type: "simple-array",
-        nullable: false,
+        nullable: true,
     })
-    post_images!: string[];
+    post_images?: string[];
 
     @Column({
         nullable: false,
