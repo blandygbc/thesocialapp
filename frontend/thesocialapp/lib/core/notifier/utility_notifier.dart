@@ -5,8 +5,8 @@ import 'package:thesocialapp/meta/utils/pick_image_util.dart';
 import 'package:thesocialapp/meta/utils/snack_bar.dart';
 
 class UtilityNotifier extends ChangeNotifier {
-  String? _userImage = "";
-  String? get userImage => _userImage;
+  String? _uploadedImageUrl = "";
+  String? get userImage => _uploadedImageUrl;
   Future uploadUserImage({
     required BuildContext context,
   }) async {
@@ -21,10 +21,10 @@ class UtilityNotifier extends ChangeNotifier {
         folder: "theSocialApp",
       )
           .then((value) {
-        _userImage = value.url;
-        debugPrint(_userImage);
+        _uploadedImageUrl = value.url;
+        debugPrint(_uploadedImageUrl);
         notifyListeners();
-        return _userImage;
+        return _uploadedImageUrl;
       });
     } catch (error) {
       debugPrint(error.toString());

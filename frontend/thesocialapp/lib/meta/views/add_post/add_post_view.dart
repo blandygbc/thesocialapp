@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:thesocialapp/app_constants.dart';
+import 'package:thesocialapp/core/dto/post_dto.dart';
+import 'package:thesocialapp/core/notifier/authentication_notifier.dart';
 import 'package:thesocialapp/core/notifier/post_notifier.dart';
 import 'package:thesocialapp/meta/views/home_view/home_view.dart';
 
@@ -27,7 +29,11 @@ class _AddPostViewState extends State<AddPostView> {
 
   @override
   Widget build(BuildContext context) {
-    final postNotifier = Provider.of<PostNotifier>(
+    PostNotifier postNotifier(bool renderUi) => Provider.of<PostNotifier>(
+          context,
+          listen: renderUi,
+        );
+    final authenticationNotifier = Provider.of<AuthenticationNotifier>(
       context,
       listen: false,
     );
@@ -56,27 +62,78 @@ class _AddPostViewState extends State<AddPostView> {
               const SizedBox(
                 height: 20,
               ),
-              ElevatedButton(
-                  onPressed: (() {}), child: const Text("Select image")),
+              postNotifier(true).selectedPostImage != null
+                  ? Container(
+                      width: 350,
+                      height: 350,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image:
+                              FileImage(postNotifier(true).selectedPostImage!),
+                        ),
+                      ),
+                    )
+                  : const SizedBox(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                      onPressed: (() {
+                        postNotifier(false).pickPostImage();
+                      }),
+                      child: Text(postNotifier(true).selectedPostImage == null
+                          ? "Select Image"
+                          : "Reselect Image")),
+                  if (postNotifier(true).selectedPostImage != null)
+                    ElevatedButton(
+                        onPressed: (() {
+                          postNotifier(false).removeImage();
+                        }),
+                        child: const Text("Remove Image")),
+                ],
+              ),
               const SizedBox(
                 height: 10,
               ),
               ElevatedButton(
                   onPressed: (() async {
-                    final response = await postNotifier.addPost(
-                      context: context,
-                      post_title: titleController.text,
-                      post_text: descriptionController.text,
-                    );
-                    if (response.statusCode == statusCodeCreated) {
-                      Navigator.of(context).pushNamed(HomeView.routeName);
+                    final String useremail = await authenticationNotifier
+                        .getUserEmailFromJwt(context: context);
+                    debugPrint("Post email $useremail");
+                    await postNotifier(false).uploadPostImage(context: context);
+                    if (postNotifier(false).uploadedImageurl != null) {
+                      final uploadedImagePath =
+                          postNotifier(false).uploadedImageurl.toString();
+                      final response = await postNotifier(false).addPost(
+                        context: context,
+                        postDTO: PostDTO(
+                          post_title: titleController.text,
+                          post_text: descriptionController.text,
+                          post_images: uploadedImagePath,
+                          useremail: useremail,
+                        ),
+                      );
+                      if (response.statusCode == statusCodeCreated) {
+                        Navigator.of(context).pushNamed(HomeView.routeName);
+                      } else {
+                        final Map<String, dynamic> parsedValue =
+                            json.decode(response.body);
+                        if (parsedValue['message'] != null) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                            parsedValue['message'],
+                          )));
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                            response.message.toString(),
+                          )));
+                        }
+                      }
                     } else {
-                      final Map<String, dynamic> parsedValue =
-                          json.decode(response.body);
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text(
-                        parsedValue['message'],
-                      )));
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text("Image not upladed"),
+                      ));
                     }
                   }),
                   child: const Text("Post")),

@@ -5,26 +5,18 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:thesocialapp/app/routes/api_routes.dart';
+import 'package:thesocialapp/core/dto/post_dto.dart';
 
 class PostAPI {
   final client = http.Client();
 
-  Future addPost({
-    required String post_title,
-    required String post_text,
-    String? post_images,
-    required String useremail,
-  }) async {
-    final Uri uri = Uri.parse(APIRoutes.addPostUrl + useremail);
+  Future addPost(PostDTO postDTO) async {
+    final Uri uri = Uri.parse(APIRoutes.addPostUrl + postDTO.useremail);
     debugPrint(uri.toString());
     try {
       final http.Response response = await client.post(
         uri,
-        body: jsonEncode({
-          "post_title": post_title,
-          "post_text": post_text,
-          "post_images": post_images,
-        }),
+        body: postDTO.toJson(),
         headers: APIRoutes.headers,
       );
       debugPrint(response.body);
