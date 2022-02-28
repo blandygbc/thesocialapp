@@ -21,7 +21,7 @@ export class UserRepository extends Repository<UserEntity>{
                 .status(statusCodes.forbidden)
                 .send({
                     authenticated: false,
-                    message: "User already exdists!"
+                    message: "User already exists!"
                 });
             return false;
         }

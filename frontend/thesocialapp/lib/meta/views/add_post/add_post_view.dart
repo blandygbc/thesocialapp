@@ -113,7 +113,7 @@ class _AddPostViewState extends State<AddPostView> {
                           useremail: useremail,
                         ),
                       );
-                      if (response.statusCode == statusCodeCreated) {
+                      if (response.statusCode == kStatusCodeCreated) {
                         Navigator.of(context).pushNamed(HomeView.routeName);
                       } else {
                         final Map<String, dynamic> parsedValue =

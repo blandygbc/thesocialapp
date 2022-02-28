@@ -27,9 +27,7 @@ class AuthenticationAPI {
         }),
         headers: APIRoutes.headers,
       );
-      if (response.statusCode == statusCodeCreated) {
-        return response.body;
-      }
+      return response;
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -64,7 +62,7 @@ class AuthenticationAPI {
         uri,
         headers: headers,
       );
-      if (response.statusCode == statusCodeOk) {
+      if (response.statusCode == kStatusCodeOk) {
         debugPrint(response.body);
         return response.body;
       }

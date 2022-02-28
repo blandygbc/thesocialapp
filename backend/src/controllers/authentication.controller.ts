@@ -50,7 +50,7 @@ export class AuthenticationController {
 
             //! Sending a JWT
             if (result) {
-                AuthenticationController.jwtSign(useremail, jwt_secret_key, "1d", req, res);
+                AuthenticationController.jwtSign(useremail, statusCodes.created, jwt_secret_key, "1d", req, res);
             }
         });
 
@@ -100,7 +100,7 @@ export class AuthenticationController {
                 } else {
                     //! Sending a JWT
                     console.log("logged in")
-                    return AuthenticationController.jwtSign(useremail, jwt_secret_key, "1d", req, res);
+                    return AuthenticationController.jwtSign(useremail, statusCodes.ok, jwt_secret_key, "1d", req, res);
                 }
             });
         } else {
@@ -116,6 +116,7 @@ export class AuthenticationController {
 
     static async jwtSign(
         useremail: string,
+        statuscode: number,
         secretkey: string,
         expiresIn: string,
         req: Request,
@@ -134,7 +135,7 @@ export class AuthenticationController {
                 if (err) {
                     console.log("jwtSign send genericErr")
                     return res
-                        .status(statusCodes.unauthorized)
+                        .status(statusCodes.badRequest)
                         .send({
                             authentication: false,
                             message: err
@@ -142,7 +143,7 @@ export class AuthenticationController {
                 }
                 console.log("jwtSign send ok")
                 return res
-                    .status(statusCodes.ok)
+                    .status(statuscode)
                     .send({
                         authentication: true,
                         data: data

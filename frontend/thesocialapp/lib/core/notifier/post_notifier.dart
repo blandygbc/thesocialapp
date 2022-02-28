@@ -41,7 +41,7 @@ class PostNotifier extends ChangeNotifier {
   }) async {
     try {
       http.Response response = await _postAPI.fechPost();
-      if (response.statusCode == statusCodeOk) {
+      if (response.statusCode == kStatusCodeOk) {
         final List<PostData> postdata = Post.fromJson(response.body).data;
         return postdata;
       } else {

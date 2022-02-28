@@ -1,10 +1,18 @@
 // Status Codes
-const statusCodeOk = 200;
-const statusCodeCreated = 201;
-const statusCodeBadRequest = 400;
-const statusCodeUnauthorized = 401;
-const statusCodeInvalidEmail = 402;
-const statusCodeForbidden = 403;
+const kStatusCodeOk = 200;
+const kStatusCodeCreated = 201;
+const kStatusCodeBadRequest = 400;
+const kStatusCodeUnauthorized = 401;
+const kStatusCodeInvalidEmail = 402;
+const kStatusCodeForbidden = 403;
 
 // Images Keys
-const imageProfileKey = "profile_image";
+const kImageProfileKey = "profile_image";
+
+// Passwords consts
+const kPasswordStrong = "strong";
+const kPassStrongEmoji = "💪 ";
+const kPasswordMedium = "medium";
+const kPassMediumEmoji = "👍 ";
+const kPasswordWeek = "week";
+const kPassWeekEmoji = "😖 ";

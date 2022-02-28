@@ -88,7 +88,7 @@ class ListOfPosts extends StatelessWidget {
                   leading: CircleAvatar(
                     backgroundImage: NetworkImage(postData.post_user.userimage),
                   ),
-                  title: Text(postData.post_title),
+                  title: Text(postData.post_user.username),
                   subtitle: Text(postData.post_text),
                   dense: true,
                 ),
