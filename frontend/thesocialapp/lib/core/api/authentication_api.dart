@@ -47,7 +47,7 @@ class AuthenticationAPI {
         body: jsonEncode({"useremail": email, "userpassword": password}),
         headers: APIRoutes.headers,
       );
-      debugPrint(response.body);
+      debugPrint("Retornou o login");
       return response;
     } catch (e) {
       debugPrint(e.toString());

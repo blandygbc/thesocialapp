@@ -14,4 +14,5 @@ class APIRoutes {
 
   //! Posts
   static const String addPostUrl = baseURL + "/post/add/";
+  static const String fetchPostsUrl = baseURL + "/post/";
 }

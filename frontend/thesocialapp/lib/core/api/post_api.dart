@@ -19,7 +19,22 @@ class PostAPI {
         body: postDTO.toJson(),
         headers: APIRoutes.headers,
       );
-      debugPrint(response.body);
+      debugPrint("API Add post response ➡️ " + response.body);
+      return response;
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  Future fechPost() async {
+    final Uri uri = Uri.parse(APIRoutes.fetchPostsUrl);
+    debugPrint(uri.toString());
+    try {
+      final http.Response response = await client.get(
+        uri,
+        headers: APIRoutes.headers,
+      );
+      debugPrint("API Fetch post response ➡️ " + response.body);
       return response;
     } catch (e) {
       debugPrint(e.toString());

@@ -126,7 +126,7 @@ class _AddPostViewState extends State<AddPostView> {
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(
-                            response.message.toString(),
+                            response.body,
                           )));
                         }
                       }

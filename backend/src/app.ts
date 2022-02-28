@@ -27,5 +27,4 @@ createConnection(config).then(async (connection) => {
     app.listen(app.get("port"), () => {
         console.log(`Server is 🏃 at port ${app.get("port")}`);
     })
-
 })
