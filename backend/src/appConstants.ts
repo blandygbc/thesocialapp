@@ -5,6 +5,7 @@ const statusCodes = {
     unauthorized: 401,
     invalidEmail: 402,
     forbidden: 403,
+    notFound: 404,
 };
 
 export { statusCodes };

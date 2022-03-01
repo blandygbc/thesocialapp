@@ -5,6 +5,7 @@ const kStatusCodeBadRequest = 400;
 const kStatusCodeUnauthorized = 401;
 const kStatusCodeInvalidEmail = 402;
 const kStatusCodeForbidden = 403;
+const kStatusCodeNotFound = 404;
 
 // Images Keys
 const kImageProfileKey = "profile_image";

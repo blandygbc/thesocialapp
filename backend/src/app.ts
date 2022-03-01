@@ -4,6 +4,7 @@ import { authRouter } from "./routes/authentication.routes";
 import config from "./ormconfig";
 import "reflect-metadata";
 import { postRouter } from "./routes/post.routes";
+import { storyRouter } from "./routes/story.routes";
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -23,6 +24,9 @@ createConnection(config).then(async (connection) => {
 
     //! Posts Route
     app.use("/post", postRouter)
+
+    //! Story Route
+    app.use("/story", storyRouter)
 
     app.listen(app.get("port"), () => {
         console.log(`Server is 🏃 at port ${app.get("port")}`);

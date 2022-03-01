@@ -1,10 +1,10 @@
-import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { UserEntity } from "./user.entity";
 
 @Entity("post")
 export class PostEntity extends BaseEntity {
     @PrimaryGeneratedColumn()
-    post_id!: string;
+    post_id!: number;
 
     @Column({
         nullable: false,
@@ -41,6 +41,11 @@ export class PostEntity extends BaseEntity {
     })
     post_likes?: number;
 
-    @ManyToOne(() => UserEntity, post_user => post_user.userposts)
+    @ManyToOne(() => UserEntity, post_user => post_user.user_posts)
+    @JoinColumn()
     post_user!: UserEntity;
+
+    @OneToMany(() => PostEntity, user_post => user_post.post_user)
+    @JoinColumn()
+    user_post!: PostEntity;
 }

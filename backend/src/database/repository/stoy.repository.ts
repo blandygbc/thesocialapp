@@ -3,22 +3,19 @@ import { PostEntity } from "../entity/post.entity";
 import { Request, Response } from "express";
 import { statusCodes } from "../../appConstants";
 import { UserRepository } from "./user.repository";
+import { StoryEntity } from "../entity/story.entity";
 
-@EntityRepository(PostEntity)
-export class PostRepository extends Repository<PostEntity> {
-    async addPost(req: Request, res: Response) {
+@EntityRepository(StoryEntity)
+export class StoryRepository extends Repository<StoryEntity> {
+    async storyAdd(req: Request, res: Response) {
         let { useremail } = req.params;
-        let { post_title, post_text, post_images, post_comments, post_likes } = req.body;
+        let { story_assets } = req.body;
 
         let user = await getCustomRepository(UserRepository).findOne({ useremail });
 
         await this.insert(this.create({
-            post_title,
-            post_text,
-            post_images,
-            post_comments,
-            post_likes,
-            post_user: user!,
+            story_assets,
+            story_user: user!,
         })).then((data: any) => {
             if (data !== undefined) {
                 res
@@ -42,28 +39,62 @@ export class PostRepository extends Repository<PostEntity> {
         });
     }
 
-    async fetchPosts(req: Request, res: Response) {
+    async storyDelete(req: Request, res: Response) {
+
+        let { story_id } = req.body;
+
+        await this.createQueryBuilder()
+            .delete()
+            .from("story")
+            .where(" story_id = :story_id ", { story_id })
+            .execute().then((data: any) => {
+                console.log(data);
+                let affectedRows = data.affected;
+                if (affectedRows > 0) {
+                    res
+                        .status(statusCodes.ok)
+                        .send({
+                            deleted: true,
+                            message: "Deleted story successfully"
+                        });
+                    return true;
+                } else {
+                    res
+                        .status(statusCodes.notFound)
+                        .send({
+                            deleted: false,
+                            message: "Couldn't delete story"
+                        });
+                    return false;
+                }
+            }).catch((error: any) => {
+                if (error) {
+                    console.log(error);
+                    res
+                        .status(statusCodes.badRequest)
+                        .send({
+                            deleted: false,
+                            message: error
+                        });
+                    return false;
+                }
+            });
+
+    }
+
+    async storyFindAll(req: Request, res: Response) {
         try {
-            /*  let posts = await this.find({
-                 where: {
-                     users: {
-                         user_id: "post.post_user"
-                     }
-                 },
-                 relations: ['users'],
-             }) */
-            let posts = await this.createQueryBuilder("post")
-                .leftJoinAndSelect("post.post_user", "users")
+            let stories = await this.createQueryBuilder("story")
+                .leftJoinAndSelect("story.story_user", "users")
                 .select()
                 .getMany();
 
-            if (posts !== undefined) {
+            if (stories !== undefined) {
                 res
                     .status(statusCodes.ok)
                     .send({
                         received: true,
-                        data: posts,
-
+                        data: stories,
                     });
                 return true;
             }
@@ -82,15 +113,14 @@ export class PostRepository extends Repository<PostEntity> {
         }
     }
 
-    async findUserPosts(req: Request, res: Response) {
+    async storyFindAllByUser(req: Request, res: Response) {
 
         let { useremail } = req.params;
-
         try {
-            let posts = await this.createQueryBuilder("post")
-                .leftJoinAndSelect("post.post_user", "users")
+            let posts = await this.createQueryBuilder("story")
+                .leftJoinAndSelect("story.story_user", "users")
                 .select()
-                .where("post_user.useremail = :useremail", { useremail })
+                .where("story_user.useremail = :useremail", { useremail })
                 .getMany();
             if (posts !== undefined) {
                 res
@@ -107,7 +137,7 @@ export class PostRepository extends Repository<PostEntity> {
                     .send({
                         received: true,
                         data: null,
-                        message: "Didn't found any post",
+                        message: "Didn't found any story",
                     });
                 return true;
             }
@@ -126,22 +156,22 @@ export class PostRepository extends Repository<PostEntity> {
         }
     }
 
-    async postDetail(req: Request, res: Response) {
+    async storyFindOne(req: Request, res: Response) {
 
-        let { post_id } = req.params;
+        let { story_id } = req.body;
         try {
-            let post = await this.createQueryBuilder("post")
-                .leftJoinAndSelect("post.post_user", "users")
+            let story = await this.createQueryBuilder("story")
+                .leftJoinAndSelect("story.story_user", "users")
                 .select()
-                .where(" post_id = :post_id ",
-                    { post_id })
+                .where(" story_id = :story_id ",
+                    { story_id })
                 .getOne();
-            if (post !== undefined) {
+            if (story !== undefined) {
                 res
                     .status(statusCodes.ok)
                     .send({
                         received: true,
-                        data: post,
+                        data: story,
 
                     });
                 return true;
@@ -151,7 +181,7 @@ export class PostRepository extends Repository<PostEntity> {
                     .send({
                         received: true,
                         data: null,
-                        message: "Didn't found the post",
+                        message: "Didn't found the story",
                     });
                 return true;
             }
