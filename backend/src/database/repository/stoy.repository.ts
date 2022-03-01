@@ -41,7 +41,7 @@ export class StoryRepository extends Repository<StoryEntity> {
 
     async storyDelete(req: Request, res: Response) {
 
-        let { story_id } = req.body;
+        let { story_id } = req.params;
 
         await this.createQueryBuilder()
             .delete()
@@ -158,7 +158,7 @@ export class StoryRepository extends Repository<StoryEntity> {
 
     async storyFindOne(req: Request, res: Response) {
 
-        let { story_id } = req.body;
+        let { story_id } = req.params;
         try {
             let story = await this.createQueryBuilder("story")
                 .leftJoinAndSelect("story.story_user", "users")

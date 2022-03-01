@@ -15,4 +15,11 @@ class APIRoutes {
   //! Posts
   static const String addPostUrl = baseURL + "/post/add/";
   static const String fetchPostsUrl = baseURL + "/post/";
+
+  //! Story
+  static const String storyAddUrl = baseURL + "/story/add/";
+  static const String storyFindAllUrl = baseURL + "/story/";
+  static const String storyFindOneUrl = baseURL + "/story/details/";
+  static const String storyFindAllByUserUrl = baseURL + "/story/user/";
+  static const String storyDeleteUrl = baseURL + "/story/delete/";
 }
